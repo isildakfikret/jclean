@@ -8,6 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -32,6 +35,10 @@ class JResponseTest {
     }
     record BookResult(String status, String time, Book data) {
     }
+    record Page(int page, int limit, int total, Collection<Book> content) {
+    }
+    record BooksResult(String status, LocalDateTime time, Page data) {
+    }
 
     return Stream.of(
         DynamicTest
@@ -39,8 +46,8 @@ class JResponseTest {
                 "result should be correct, when the response created with person object and, null code, null message",
                 () -> {
                   final var person = new Person("jane", "doe", 26);
-                  final var response = JResponse.success(person);
 
+                  final var response = JResponse.success(person);
                   final var responseJson = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
                   final var result = this.mapper.readValue(responseJson, PersonResult.class);
 
@@ -55,8 +62,8 @@ class JResponseTest {
             "result should be correct, when the response created with book object, null code, null message",
             () -> {
               final var book = new Book("Data Structure and Algorithms in Java", "Unknown");
-              final var response = JResponse.success(book);
 
+              final var response = JResponse.success(book);
               final var json = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
               final var result = this.mapper.readValue(json, BookResult.class);
 
@@ -66,7 +73,23 @@ class JResponseTest {
               assertEquals(result.status, "SUCCESS");
               assertEquals(result.data, book);
             }
-        )
+        ),
+        DynamicTest.dynamicTest("result should be correct, when the response created for pagination", () -> {
+          final var books = List.of(
+              new Book("Refactoring", "Kent Beck & Martin Fowler"),
+              new Book("Patterns of Enterprise Application Architecture", "Martin Fowler")
+          );
+
+          final var response = JResponse.success(1, 100, 1453, books);
+          final var json = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
+          final var result = this.mapper.readValue(json, BooksResult.class);
+
+          assertNotNull(result.time);
+          assertNotNull(result.status);
+          assertNotNull(result.data);
+          assertEquals(result.status, "SUCCESS");
+          assertTrue(result.data.content.containsAll(books));
+        })
     );
   }
 
@@ -75,12 +98,13 @@ class JResponseTest {
   Stream<DynamicTest> failTest() {
     record BasicResponseResult(String status, String time, String data) {
     }
-    record ValidationResponseResult(String status, String time, String[] data) {
+    record ValidationResponseResult(String status, LocalDateTime time, Collection<String> data) {
     }
 
     return Stream.of(
         DynamicTest.dynamicTest("result should be correct when the fail response created", () -> {
           final var message = "mock message";
+
           final var response = JResponse.fail(message);
           final var json = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
           final var result = this.mapper.readValue(json, BasicResponseResult.class);
@@ -89,13 +113,14 @@ class JResponseTest {
           assertEquals(result.data, message);
         }),
         DynamicTest.dynamicTest("result should be correct when the fail response created with array", () -> {
-          final var messages = new String[]{ "username is required", "username must be between 4-16 characters" };
+          final var messages = List.of("username is required", "username must be between 4-16 characters");
+
           final var response = JResponse.fail(messages);
           final var json = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
           final var result = this.mapper.readValue(json, ValidationResponseResult.class);
 
           assertEquals(result.status, "FAIL");
-          assertArrayEquals(result.data, messages);
+          assertTrue(result.data.containsAll(messages));
         })
     );
   }
@@ -113,7 +138,6 @@ class JResponseTest {
 
           final var response = JResponse.error(errCode, errMessage);
           final var json = this.mapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
-
           final var result = this.mapper.readValue(json, ErrorResponseResult.class);
 
           assertEquals(result.status, "ERROR");
