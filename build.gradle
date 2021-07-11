@@ -1,0 +1,30 @@
+plugins {
+    id 'java-library'
+}
+
+apply from: 'deps.gradle'
+
+group 'com.codingpassenger.tools'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    final def libs = project.ext.libraries
+    final def testLibs = project.ext.testLibraries
+
+    implementation libs.jacksonAnnotations
+
+    testImplementation testLibs.junitJupiterApi
+    testImplementation testLibs.junitJupiterParams
+    testRuntimeOnly testLibs.junitJupiterEngine
+
+    testImplementation testLibs.jacksonJsr310
+    testImplementation testLibs.jacksonDatabind
+}
+
+test {
+    useJUnitPlatform()
+}

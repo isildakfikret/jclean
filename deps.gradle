@@ -1,0 +1,16 @@
+ext {
+  jacksonVersion = '2.12.4'
+  junitJupiterVersion = '5.7.2'
+
+  libraries = [
+      jacksonAnnotations: "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+  ]
+
+  testLibraries = [
+      junitJupiterApi   : "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion",
+      junitJupiterParams: "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion",
+      junitJupiterEngine: "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion",
+      jacksonJsr310     : "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion",
+      jacksonDatabind   : "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+  ]
+}
