@@ -1,6 +1,14 @@
 # JClean
 
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/isildakfikret/jclean/java-ci/master)
+<div style="margin-left: auto; margin-right: auto">
+
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/isildakfikret/jclean/java-ci)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/isildakfikret/jclean)
+![GitHub issues](https://img.shields.io/github/issues-raw/isildakfikret/jclean)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/isildakfikret/jclean)
+![GitHub all releases](https://img.shields.io/github/downloads/isildakfikret/jclean/total)
+
+</div>
 
 Contains two general models for API development:
 
