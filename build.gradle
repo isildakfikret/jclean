@@ -1,30 +1,61 @@
+import java.text.SimpleDateFormat
+
 plugins {
-    id 'java-library'
+  id 'java-library'
+  id 'net.nemerosa.versioning' version '2.14.0'
 }
 
 apply from: 'deps.gradle'
 
-group 'com.codingpassenger.tools'
-version '1.0.0'
+final def libConfig = project.ext.libConfig
+
+group(libConfig.group)
+version(versioning.info.lastTag == null ? '1.0.0' : versioning.info.lastTag.replace('v', ''))
+
+java {
+  sourceCompatibility = libConfig.jdkVersion
+  targetCompatibility = libConfig.jdkVersion
+
+  modularity.inferModulePath.set(true)
+}
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-    final def libs = project.ext.libraries
-    final def testLibs = project.ext.testLibraries
+  final def libs = project.ext.libraries
+  final def testLibs = project.ext.testLibraries
 
-    implementation libs.jacksonAnnotations
+  implementation libs.jacksonAnnotations
 
-    testImplementation testLibs.junitJupiterApi
-    testImplementation testLibs.junitJupiterParams
-    testRuntimeOnly testLibs.junitJupiterEngine
+  testImplementation testLibs.junitJupiterApi
+  testImplementation testLibs.junitJupiterParams
+  testRuntimeOnly testLibs.junitJupiterEngine
 
-    testImplementation testLibs.jacksonJsr310
-    testImplementation testLibs.jacksonDatabind
+  testImplementation testLibs.jacksonJsr310
+  testImplementation testLibs.jacksonDatabind
 }
 
 test {
-    useJUnitPlatform()
+  useJUnitPlatform()
+}
+
+project.configurations.implementation.setCanBeResolved(true)
+
+jar.doFirst {
+  manifest {
+    attributes([
+        'Manifest-Version'      : '1.0',
+        'Implementation-Title'  : 'Dev Tools',
+        'Implementation-Version': project.version,
+        'Build-Revision'        : versioning.info.commit,
+        'Built-By'              : 'Fikret ISILDAK',
+        'Created-By'            : "Gradle ${gradle.gradleVersion}",
+        'Build-Jdk'             : "${libConfig.jdkVersion} (${System.properties.get('java.vendor')} ${System.properties.get('java.vm.version')})",
+        'Build-OS'              : "${System.properties.get('os.name')} ${System.properties.get('os.arch')} ${System.properties.get('os.version')}",
+        'Build-Timestamp'       : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+        'Classpath'             : configurations.implementation.collect { it.name }.join(' ')
+    ])
+  }
 }

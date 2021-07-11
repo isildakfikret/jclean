@@ -1,6 +1,11 @@
 ext {
-  jacksonVersion = '2.12.4'
-  junitJupiterVersion = '5.7.2'
+  libConfig = [
+      group     : 'com.codingpassenger.tools',
+      jdkVersion: JavaVersion.VERSION_16
+  ]
+
+  final def jacksonVersion = '2.12.4'
+  final def junitJupiterVersion = '5.7.2'
 
   libraries = [
       jacksonAnnotations: "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
