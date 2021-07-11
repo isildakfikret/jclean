@@ -11,7 +11,7 @@ import java.util.Collection;
  * Represents general API response models.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class JResponse {
+public final class JResponse {
   private final JResponseStatus status;
   private final LocalDateTime time = LocalDateTime.now(ZoneOffset.UTC);
   private final Object data;
@@ -94,7 +94,7 @@ public class JResponse {
    *
    * @return Returns response result.
    */
-  public final JResponseStatus getStatus() {
+  public JResponseStatus getStatus() {
     return status;
   }
 
@@ -103,7 +103,7 @@ public class JResponse {
    *
    * @return Returns date-time as UTC.
    */
-  public final LocalDateTime getTime() {
+  public LocalDateTime getTime() {
     return time;
   }
 
@@ -112,7 +112,7 @@ public class JResponse {
    *
    * @return Returns payload.
    */
-  public final Object getData() {
+  public Object getData() {
     return data;
   }
 
@@ -121,7 +121,7 @@ public class JResponse {
    *
    * @return Returns error code.
    */
-  public final Integer getCode() {
+  public Integer getCode() {
     return code;
   }
 
@@ -130,7 +130,7 @@ public class JResponse {
    *
    * @return Returns error message.
    */
-  public final String getMessage() {
+  public String getMessage() {
     return message;
   }
 
