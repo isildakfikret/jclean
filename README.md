@@ -1,5 +1,7 @@
 # JClean
 
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/isildakfikret/jclean/java-ci/master)
+
 Contains two general models for API development:
 
     JResponse
